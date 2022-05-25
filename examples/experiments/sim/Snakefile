@@ -1,0 +1,14 @@
+configfile: "config.yaml"
+include: "../../rules/common.smk"
+include: "../../rules/sim.smk"
+
+rule all:
+	input:
+		expand(f"sim.{{nnodes}}_{{rdup}}_{{rinv}}_{{nhap}}_{{i}}.{{f}}",
+			nnodes = config['nnodes'],
+			rdup = config['dup_ratio'],
+			rinv = config['inv_ratio'],
+			nhap = config['nhaplotypes'],
+			i = sampnames("nsamples"),
+			f = ["founders.final.txt", "nrecomb.txt", "gfa"]
+		),

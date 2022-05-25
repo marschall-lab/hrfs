@@ -1,0 +1,29 @@
+configfile: "config.yaml"
+include: "../../rules/common.smk"
+
+rule examples:
+	input:
+		expand(f"{{sample}}.gfa",
+			sample = globgfa(f"{DATADIR}/examples")
+		),
+		expand(f"{{sample}}.{{f}}.txt",
+			sample = globgfa(f"{DATADIR}/examples"),
+			f = ["founders.final", "nrecomb" ]
+		),
+
+rule get_whole_graph:
+	input:
+		f"{DATADIR}/examples/{{sample}}.gfa"
+	output:
+		f"{{sample,[^/]+}}.gfa",
+	shell:
+		f"ln -s {{input}} {{output}}"
+
+rule clean:
+	input:
+		expand(f"{{sample}}.gfa", sample = globgfa("."))
+	params:
+		lambda w, input: ".* ".join([ i[:-4] for i in input + [""] ])
+	run:
+		if len(str(params)) > 0:
+			shell(f"rm {{params}}")
