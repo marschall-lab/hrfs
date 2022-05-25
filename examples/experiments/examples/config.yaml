@@ -1,6 +1,6 @@
 debug: false
 datadir: "../../data"
-shelldir: "../../../software/scripts"
+shelldir: "../../../scripts"
 bindir: "../../../software/target"
 
 xhap_regex: "H"
