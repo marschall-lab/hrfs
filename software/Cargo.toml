@@ -1,5 +1,5 @@
 [package]
-name        = "hrfs"
+name        = "founderset"
 version     = "0.1.0"
 authors     = ["Konstantinn Bonnet <bonnetk@hhu.de>", "Daniel Doerr <daniel.doerr@hhu.de>"]
 edition     = "2018"
