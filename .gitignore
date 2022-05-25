@@ -19,5 +19,8 @@ examples/**.tsv
 examples/**.lp
 examples/**.sol
 examples/**/.snakemake
+examples/**
 !examples/**/data/**/*.gfa
+!examples/**/experiments/**/*.yaml
+!examples/**/experiments/**/Snakefile
 software/target
