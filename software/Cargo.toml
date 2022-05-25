@@ -1,0 +1,27 @@
+[package]
+name        = "hrfs"
+version     = "0.1.0"
+authors     = ["Konstantinn Bonnet <bonnetk@hhu.de>", "Daniel Doerr <daniel.doerr@hhu.de>"]
+edition     = "2018"
+rust-version= "1.60"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap        = {version = "3.0.14", features = [ "derive" ] }
+gfa         = "0.10.0"
+handlegraph = "0.7.0-alpha.9"
+itertools   = "0.10.3"
+petgraph    = "0.6.0"
+quick-csv   = "0.1.6"
+rand        = "0.8.5"
+regex       = "1"
+rustc-hash  = "1"
+segment-tree = "2"
+simd-adler32 = "0.3.4"
+
+# Logging and error management
+anyhow      = "1"
+env_logger  = "0.7"
+log         = "0.4"
+thiserror   = "1"
