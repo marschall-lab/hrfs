@@ -3,15 +3,17 @@
 Analysis of the set of founder sequences under a homologous recombination model
 
 ## Requirements
-
+### Main programs
 * `rust` version >= 1.60
+* `gurobi` version >= 9.5 or `cplex`
+### Workflow (optional)
 * `python` version >= 3.7
 * `snakemake`
 
 ## Build software
 
 ```
-cargo build --manifest-path Cargo.toml --release --offline
+cargo build --manifest-path Cargo.toml --release
 ```
 
 ## Run examples
