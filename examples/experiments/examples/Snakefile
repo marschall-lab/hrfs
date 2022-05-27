@@ -18,12 +18,3 @@ rule get_whole_graph:
 		f"{{sample,[^/]+}}.gfa",
 	shell:
 		f"ln -s {{input}} {{output}}"
-
-rule clean:
-	input:
-		expand(f"{{sample}}.gfa", sample = globgfa("."))
-	params:
-		lambda w, input: ".* ".join([ i[:-4] for i in input + [""] ])
-	run:
-		if len(str(params)) > 0:
-			shell(f"rm {{params}}")

@@ -171,3 +171,12 @@ rule compress_min_zq:
 	shell:
 		f"zpaq a {{output}} {{input.f}} -m1 -t1 >/dev/null 2>&1 "
 		f"&& rm {{input.f}}"
+
+rule clean:
+	input:
+		expand(f"{{sample}}.gfa", sample = globgfa("."))
+	params:
+		lambda w, input: ".* ".join([ i[:-4] for i in input + [""] ])
+	run:
+		if len(str(params)) > 0:
+			shell(f"rm {{params}}")
