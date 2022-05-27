@@ -8,7 +8,7 @@ rule examples:
 		),
 		expand(f"{{sample}}.{{f}}.txt",
 			sample = globgfa(f"{DATADIR}/examples"),
-			f = ["founders.final", "nrecomb" ]
+			f = ["min.founders", "nrecomb" ]
 		),
 
 rule get_whole_graph:

@@ -10,5 +10,5 @@ rule all:
 			rinv = config['inv_ratio'],
 			nhap = config['nhaplotypes'],
 			i = sampnames("nsamples"),
-			f = ["founders.final.txt", "nrecomb.txt", "gfa"]
+			f = ["min.founders.txt", "nrecomb.txt", "gfa"]
 		),

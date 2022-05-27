@@ -15,8 +15,8 @@ def sampnames(c):
 rule check_length:
 	input:
 		ref = f"{{sample}}.gfa",
-		f1 = f"{{sample}}.founders.noopt.txt",
-		f2 = f"{{sample}}.founders.final.txt",
+		f1 = f"{{sample}}.flow.founders.txt",
+		f2 = f"{{sample}}.min.founders.txt",
 	output:
 		f"{{sample}}.founders.stats",
 	shell:

@@ -56,11 +56,11 @@ rule construct_founder_seqs:
 		sol = f"{{sample}}.flow.sol",
 		graph = f"{{sample}}.gfa",
 	output:
-		f"{{sample}}.founders.noopt.txt"
+		f"{{sample}}.flow.founders.txt"
 	log:
-		f"{{sample}}.founders.noopt.log"
+		f"{{sample}}.flow.founders.log"
 	benchmark:
-		f"{{sample}}.founders.noopt.perf"
+		f"{{sample}}.flow.founders.perf"
 	shell:
 		f"export RUST_LOG={RUST_LOG}; "
 		f"{RUST_BIN}/flow2seq {{input.sol}} >{{output}} 2>{{log}}; "
@@ -69,8 +69,8 @@ rule construct_founder_seqs:
 
 rule get_recombination_number:
 	input:
-		fnd = f"{{sample}}.{STRIP}founders.noopt.txt",
-		haps = f"{{sample}}.haps.tsv",
+		fnd = f"{{sample}}.{STRIP}flow.founders.txt",
+		haps = f"{{sample}}.haplotypes.txt",
 	output:
 		f"{{sample}}.nrecomb.txt"
 	log:
@@ -86,7 +86,7 @@ rule extract_haplotypes:
 	input:
 		f"{{sample}}.gfa"
 	output:
-		f"{{sample}}.haps.tsv"
+		f"{{sample}}.haplotypes.txt"
 	shell:
 		f"{SHDIR}/xhap.sh -p {config['xhap_regex']} "
 			f"{{input}} >{{output}}; "
@@ -94,8 +94,8 @@ rule extract_haplotypes:
 
 rule write_minimization_lp:
 	input:
-		fnd = f"{{sample}}.{STRIP}founders.noopt.txt",
-		haps = f"{{sample}}.haps.tsv",
+		fnd = f"{{sample}}.{STRIP}flow.founders.txt",
+		haps = f"{{sample}}.haplotypes.txt",
 		rc = rules.get_recombination_number.output,
 	output:
 		f"{{sample}}.min.lp"
@@ -125,11 +125,11 @@ rule construct_minimal_founders:
 	input:
 		f"{{sample}}.min.sol"
 	output:
-		f"{{sample}}.founders.final.txt"
+		f"{{sample}}.min.founders.txt"
 	log:
-		f"{{sample}}.founders.final.log"
+		f"{{sample}}.min.founders.log"
 	benchmark:
-		f"{{sample}}.founders.final.perf"
+		f"{{sample}}.min.founders.perf"
 	shell:
 		f"export RUST_LOG={RUST_LOG}; "
 		f"{RUST_BIN}/min2seq {{input}} >{{output}} 2>{{log}}"
@@ -137,7 +137,7 @@ rule construct_minimal_founders:
 rule compress_flow:
 	input:
 		f = f"{{sample}}.flow.lp",
-		c = f"{{sample}}.founders.noopt.txt"
+		c = f"{{sample}}.flow.founders.txt"
 	output:
 		f"{{sample}}.flow.lp.gz"
 	shell:
@@ -146,7 +146,7 @@ rule compress_flow:
 rule compress_min:
 	input:
 		f = f"{{sample}}.min.lp",
-		c = f"{{sample}}.founders.final.txt"
+		c = f"{{sample}}.min.founders.txt"
 	output:
 		f"{{sample}}.min.lp.gz"
 	shell:
@@ -155,7 +155,7 @@ rule compress_min:
 rule compress_flow_zq:
 	input:
 		f = f"{{sample}}.flow.lp",
-		c = f"{{sample}}.founders.noopt.txt"
+		c = f"{{sample}}.flow.founders.txt"
 	output:
 		f"{{sample}}.flow.lp.zpaq"
 	shell:
@@ -165,7 +165,7 @@ rule compress_flow_zq:
 rule compress_min_zq:
 	input:
 		f = f"{{sample}}.min.lp",
-		c = f"{{sample}}.founders.final.txt"
+		c = f"{{sample}}.min.founders.txt"
 	output:
 		f"{{sample}}.min.lp.zpaq"
 	shell:
