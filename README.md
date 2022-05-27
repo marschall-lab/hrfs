@@ -85,6 +85,10 @@ Most relevant output, by file extension:
 - `.founders.noopt.txt`: minimal founder sequences set reconstructed from flow solution
 - `.founders.final.txt`: minimal founder sequences set after minimizing their number of recombinations
 
+In the results, founder sequences are represented horizontally in GFA format walk lines.
+Minimization output shows two additional lines per founder sequence to indicate
+the positions of a recombination, and the haplotype a segment above belongs to.
+
 
 ## License
 
