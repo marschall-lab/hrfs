@@ -4,7 +4,7 @@ shelldir: "../../../scripts"
 bindir: "../../../target"
 
 
-nnodes: [ 10, 20, 50, 100 ]
+nnodes: [ 25, 50, 100 ]
 dup_ratio: [ 0.1, 0.5, 0.1 ]
 inv_ratio: [ 0.1, 0.5, 0.1 ]
 nhaplotypes: [ 20, 30, 40 ]
