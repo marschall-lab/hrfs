@@ -10,5 +10,5 @@ Analysis of the set of founder sequences under the template switch model
 ## Build software
 
 ```
-cargo build --manifest-path software/Cargo.toml --release --offline
+cargo build --manifest-path Cargo.toml --release --offline
 ```

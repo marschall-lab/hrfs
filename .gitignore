@@ -17,4 +17,4 @@ examples/experiments/**/*
 !examples/experiments/**/*.yaml
 !examples/experiments/**/Snakefile
 !*/
-software/target
+target

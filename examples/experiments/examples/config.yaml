@@ -1,7 +1,7 @@
 debug: false
 datadir: "../../data"
 shelldir: "../../../scripts"
-bindir: "../../../software/target"
+bindir: "../../../target"
 
 xhap_regex: "H"
 solve_time_limit: 5
