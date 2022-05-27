@@ -1,6 +1,6 @@
-# Template Switch Founder Set
+# Founder sets under allelic and non-allelic homologous recombination
 
-Analysis of the set of founder sequences under the template switch model
+Analysis of the set of founder sequences under a homologous recombination model
 
 ## Requirements
 
