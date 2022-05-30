@@ -218,13 +218,13 @@ fn write_founders<W: io::Write>(
                 .chain(std::iter::once(f.iter().last().unwrap()))
                 .tuple_windows()
                 .enumerate()
-                .map(|(i, ((_, _, s, _), (_, _, _, c)))| {
+                .map(|(i, ((u, _, s, _), (_, _, _, c)))| {
                     let s = if i == 0 || *s {
                         c.to_string()
                     } else {
                         ".".to_owned()
                     };
-                    let w = std::cmp::max(2i32 - (s.len() as i32), 0);
+                    let w = std::cmp::max(u.to_string().len() + 1 - s.len(), 0);
                     format!(
                         "{}{}",
                         s,
