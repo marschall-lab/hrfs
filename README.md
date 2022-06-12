@@ -2,7 +2,7 @@
 
 Analysis of the set of founder sequences under a homologous recombination model.
 
-Please refer to the preprint on biorXiv: [https://www.biorxiv.org/content/10.1101/2022.05.27.493721v1](https://www.biorxiv.org/content/10.1101/2022.05.27.493721v1).
+Please refer to the preprint on biorXiv: [https://www.biorxiv.org/content/10.1101/2022.05.27.493721](https://www.biorxiv.org/content/10.1101/2022.05.27.493721).
 
 
 ## Requirements
