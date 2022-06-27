@@ -1,0 +1,6 @@
+debug: false
+datadir: "../../data"
+shelldir: "../../../scripts"
+bindir: "../../../target"
+
+xhap_regex: "."
