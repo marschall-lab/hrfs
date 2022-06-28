@@ -51,6 +51,7 @@ snakemake -k -j 1 clean
 The following uses the `examples' experiment as reference.  It demonstrates the
 software's typical usage with the provided `snakemake` workflows.
 
+
 ### Configuration
 
 Experiments reside in their own respective directories and are configured via a `config.yaml` file, used to configure simulation and analysis parameters.
