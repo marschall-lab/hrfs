@@ -6,10 +6,6 @@ def globgfa_hap(dir):
 	return [(n.split(".gfa"))[0] for (p,n) in fn if subprocess.getoutput(DATADIR + "/xhap.sh -p H " + p) != ""]
 
 GUROBI="gurobi_cl"
-if "gurobi_root" in config:
-	GUROBI = f"GRB_LICENSE_FILE={config['gurobi_lic']} {GUROBI}"
-	GUROBI = f"PATH=$PATH:{config['gurobi_root']}/bin {GUROBI}"
-	GUROBI = f"LD_LIBRARY_PATH={config['gurobi_root']}/lib {GUROBI}"
 
 DATADIR = workflow.basedir + "/" + config.get('datadir')
 SHDIR = workflow.basedir + "/" + config.get('shelldir')
@@ -49,6 +45,7 @@ rule solve_founder_flow:
 	benchmark:
 		f"{{sample}}.flow.sol.perf"
 	shell:
+		f"module load gurobi 2>/dev/null || true; "
 		f"{GUROBI} ResultFile={{output}} LogFile={{log}} Threads=1 {{input}} >/dev/null"
 
 rule construct_founder_seqs:
@@ -118,6 +115,7 @@ rule solve_minimization:
 	benchmark:
 		f"{{sample}}.min.sol.perf"
 	shell:
+		f"module load gurobi 2>/dev/null || true; "
 		f"{GUROBI} ResultFile={{output}} LogFile={{log}} TimeLimit={MAXSOLTIME} Threads=1 "
 		f"{{input}} >/dev/null"
 
