@@ -33,17 +33,17 @@ pub struct Args {
         short = 'l',
         long = "long",
         help = "output founder sequences in long format",
-        conflicts_with = "wide"
+        conflicts_with = "compact"
     )]
     pub long: bool,
 
     #[clap(
-        short = 'w',
-        long = "wide",
-        help = "output founder sequences in wide format",
+        short = 'c',
+        long = "compact",
+        help = "output founder sequences in compacted format",
         conflicts_with = "long"
     )]
-    pub wide: bool,
+    pub compact: bool,
 
     #[clap(help = "ilp solution", required = true)]
     pub sol: String,
@@ -203,7 +203,7 @@ fn walk_sol(
         .collect::<Vec<Vec<(u64, bool, bool, usize)>>>()
 }
 
-fn write_founders<W: io::Write>(
+fn write_founders_compact<W: io::Write>(
     fs: Vec<Vec<(u64, bool, bool, usize)>>,
     out: &mut io::BufWriter<W>,
 ) -> Result<(), io::Error> {
@@ -269,7 +269,7 @@ fn read_haplotypes(file: String) -> Vec<String> {
 
 fn write_founders_long<W: io::Write>(
     fs: Vec<Vec<(u64, bool, bool, usize)>>,
-    htab: FxHashMap<usize, String>,
+    hmap: FxHashMap<usize, String>,
     out: &mut io::BufWriter<W>,
 ) -> Result<(), io::Error> {
     log::info!("writing final haplotype-minimized founders (long format)");
@@ -290,7 +290,7 @@ fn write_founders_long<W: io::Write>(
                                 format!(
                                     "{}\t{}\t",
                                     fi,
-                                    htab.get(cv).or(Some(&cv.to_string())).unwrap()
+                                    hmap.get(cv).or(Some(&cv.to_string())).unwrap()
                                 )
                             } else {
                                 format!(
@@ -298,7 +298,7 @@ fn write_founders_long<W: io::Write>(
                                     if *d { "<" } else { ">" },
                                     u.to_string(),
                                     fi,
-                                    htab.get(cv).or(Some(&cv.to_string())).unwrap(),
+                                    hmap.get(cv).or(Some(&cv.to_string())).unwrap(),
                                 )
                             }
                         } else {
@@ -314,7 +314,7 @@ fn write_founders_long<W: io::Write>(
 
 fn write_founders_wide<W: io::Write>(
     fs: Vec<Vec<(u64, bool, bool, usize)>>,
-    htab: FxHashMap<usize, String>,
+    hmap: FxHashMap<usize, String>,
     out: &mut io::BufWriter<W>,
 ) -> Result<(), io::Error> {
     log::info!("writing final haplotype-minimized founders (long format)");
@@ -336,12 +336,12 @@ fn write_founders_wide<W: io::Write>(
                             "{}{}",
                             if i == 0 || *su {
                                 if i == 0 {
-                                    format!("{}\t", htab.get(cv).or(Some(&cv.to_string())).unwrap())
+                                    format!("{}\t", hmap.get(cv).or(Some(&cv.to_string())).unwrap())
                                 } else {
                                     let t = format!(
                                         "{}\n{}\t{}",
                                         w,
-                                        htab.get(cv).or(Some(&cv.to_string())).unwrap(),
+                                        hmap.get(cv).or(Some(&cv.to_string())).unwrap(),
                                         String::from_utf8(vec![b' '; wspace]).unwrap(),
                                     );
                                     t
@@ -381,10 +381,16 @@ fn main() -> Result<(), io::Error> {
     let mut out = io::BufWriter::new(std::io::stdout());
     if params.long {
         write_founders_long(fs, hmap, &mut out)?;
-    } else if params.wide {
-        write_founders_wide(fs, hmap, &mut out)?;
+    } else if params.compact {
+        if hmap.len() > 0 {
+            writeln!(
+                std::io::stderr(),
+                "warning: haplotype names unused in selected output format"
+            )?;
+        }
+        write_founders_compact(fs, &mut out)?;
     } else {
-        write_founders(fs, &mut out)?;
+        write_founders_wide(fs, hmap, &mut out)?;
     }
     out.flush()?;
 
