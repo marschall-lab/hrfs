@@ -89,7 +89,7 @@ pub fn write_founders<W: io::Write>(
     log::info!("writing founder sequences to file");
     f.iter()
         .enumerate()
-        .try_for_each(|(i, c)| writeln!(out, "founder_seq{}\t{}", i, v2seq(c, "")))
+        .try_for_each(|(i, c)| writeln!(out, "founder_seq{}\t{}", i+1, v2seq(c, "")))
 }
 
 pub fn write_gfa_header<W: io::Write>(out: &mut io::BufWriter<W>) -> Result<(), io::Error> {
