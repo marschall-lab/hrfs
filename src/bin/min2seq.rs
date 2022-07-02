@@ -21,8 +21,22 @@ use founderset as ff;
     author = "Konstantinn Bonnet <bonnetk@hhu.de>, Daniel Doerr <daniel.doerr@hhu.de>",
     about = "Extract founder sequences from minimization solution"
 )]
-pub struct Command {
-    #[clap(index = 1, help = "ilp solution", required = true)]
+pub struct Args {
+    #[clap(
+        short = 'h',
+        long = "haplotypes",
+        help = "use haplotype names from file"
+    )]
+    pub haps: Option<String>,
+
+    #[clap(
+        short = 'l',
+        long = "long",
+        help = "print founder sequences in long format"
+    )]
+    pub long: bool,
+
+    #[clap(help = "ilp solution", required = true)]
     pub sol: String,
 }
 
@@ -236,9 +250,62 @@ fn write_founders<W: io::Write>(
     })
 }
 
+fn read_haplotypes(file: String) -> Vec<String> {
+    let f = fs::File::open(file).expect("can't open haplotype file");
+    BufReader::new(f)
+        .lines()
+        .map(|l| l.unwrap().split('\t').nth(0).unwrap().to_string())
+        .collect::<Vec<_>>()
+}
+
+fn write_founders_long<W: io::Write>(
+    fs: Vec<Vec<(u64, bool, bool, usize)>>,
+    htab: FxHashMap<usize, String>,
+    out: &mut io::BufWriter<W>,
+) -> Result<(), io::Error> {
+    log::info!("writing final haplotype-minimized founders (long format)");
+    fs.iter()
+        .enumerate()
+        .try_for_each(|(fi, f)| -> Result<(), io::Error> {
+            writeln!(
+                out,
+                "{}",
+                f.iter()
+                    .chain(std::iter::once(f.iter().last().unwrap()))
+                    .tuple_windows()
+                    .enumerate()
+                    .map(|(i, ((u, d, su, _), (_, _, _, cv)))| format!(
+                        "{}{}{}",
+                        if i == 0 || *su {
+                            if i == 0 {
+                                format!(
+                                    "{}\t{}\t",
+                                    i,
+                                    htab.get(cv).or(Some(&cv.to_string())).unwrap()
+                                )
+                            } else {
+                                format!(
+                                    "{}{}\n{}\t{}\t",
+                                    if *d { "<" } else { ">" },
+                                    u.to_string(),
+                                    fi,
+                                    htab.get(cv).or(Some(&cv.to_string())).unwrap(),
+                                )
+                            }
+                        } else {
+                            "".to_owned()
+                        },
+                        if *d { "<" } else { ">" },
+                        u.to_string()
+                    ))
+                    .join("")
+            )
+        })
+}
+
 fn main() -> Result<(), io::Error> {
     env_logger::init();
-    let params = Command::parse();
+    let params = Args::parse();
 
     let f = fs::File::open(&params.sol).expect("can't open sol file");
     let mut sol = BufReader::new(f);
@@ -248,8 +315,19 @@ fn main() -> Result<(), io::Error> {
     let (cols, switch) = parse_haplotype_assignments(&mut sol, &g)?;
     let fs = walk_sol(g, cols, switch);
 
+    let mut hmap = FxHashMap::default();
+    if let Some(hf) = params.haps {
+        read_haplotypes(hf).iter().enumerate().for_each(|(i, x)| {
+            hmap.insert(i, x.to_string());
+        });
+    }
+
     let mut out = io::BufWriter::new(std::io::stdout());
-    write_founders(fs, &mut out)?;
+    if params.long {
+        write_founders_long(fs, hmap, &mut out)?;
+    } else {
+        write_founders(fs, &mut out)?;
+    }
     out.flush()?;
 
     log::info!("done");
