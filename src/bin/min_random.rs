@@ -179,7 +179,7 @@ fn main() -> Result<(), std::io::Error> {
         c += sc;
     }
     log::info!("total #recombinations: {}", c);
-    writeln!(out, "{}", c);
+    writeln!(out, "{}", c)?;
     out.flush()?;
 
     log::info!("done");

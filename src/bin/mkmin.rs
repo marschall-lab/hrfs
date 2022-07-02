@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 use clap::Parser;
 use handlegraph::handle::Handle;
 use itertools::Itertools;
-use petgraph::{dot::Dot, graphmap::DiGraphMap, Incoming, Outgoing};
+use petgraph::{graphmap::DiGraphMap, Incoming, Outgoing};
 use rustc_hash::{FxHashMap, FxHashSet};
 
 /* private use */
