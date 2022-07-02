@@ -32,9 +32,18 @@ pub struct Args {
     #[clap(
         short = 'l',
         long = "long",
-        help = "print founder sequences in long format"
+        help = "output founder sequences in long format",
+        conflicts_with = "wide"
     )]
     pub long: bool,
+
+    #[clap(
+        short = 'w',
+        long = "wide",
+        help = "output founder sequences in wide format",
+        conflicts_with = "long"
+    )]
+    pub wide: bool,
 
     #[clap(help = "ilp solution", required = true)]
     pub sol: String,
@@ -280,7 +289,7 @@ fn write_founders_long<W: io::Write>(
                             if i == 0 {
                                 format!(
                                     "{}\t{}\t",
-                                    i,
+                                    fi,
                                     htab.get(cv).or(Some(&cv.to_string())).unwrap()
                                 )
                             } else {
@@ -298,6 +307,53 @@ fn write_founders_long<W: io::Write>(
                         if *d { "<" } else { ">" },
                         u.to_string()
                     ))
+                    .join("")
+            )
+        })
+}
+
+fn write_founders_wide<W: io::Write>(
+    fs: Vec<Vec<(u64, bool, bool, usize)>>,
+    htab: FxHashMap<usize, String>,
+    out: &mut io::BufWriter<W>,
+) -> Result<(), io::Error> {
+    log::info!("writing final haplotype-minimized founders (long format)");
+    let mut wspace = 0;
+    fs.iter()
+        .enumerate()
+        .try_for_each(|(fi, f)| -> Result<(), io::Error> {
+            writeln!(
+                out,
+                "{}{}",
+                format!("founder_seq{}\n", fi),
+                f.iter()
+                    .chain(std::iter::once(f.iter().last().unwrap()))
+                    .tuple_windows()
+                    .enumerate()
+                    .map(|(i, ((u, d, su, _), (_, _, _, cv)))| {
+                        let w = format!("{}{}", if *d { "<" } else { ">" }, u.to_string());
+                        let s = format!(
+                            "{}{}",
+                            if i == 0 || *su {
+                                if i == 0 {
+                                    format!("{}\t", htab.get(cv).or(Some(&cv.to_string())).unwrap())
+                                } else {
+                                    let t = format!(
+                                        "{}\n{}\t{}",
+                                        w,
+                                        htab.get(cv).or(Some(&cv.to_string())).unwrap(),
+                                        String::from_utf8(vec![b' '; wspace]).unwrap(),
+                                    );
+                                    t
+                                }
+                            } else {
+                                "".to_owned()
+                            },
+                            w,
+                        );
+                        wspace += w.len();
+                        s
+                    })
                     .join("")
             )
         })
@@ -325,6 +381,8 @@ fn main() -> Result<(), io::Error> {
     let mut out = io::BufWriter::new(std::io::stdout());
     if params.long {
         write_founders_long(fs, hmap, &mut out)?;
+    } else if params.wide {
+        write_founders_wide(fs, hmap, &mut out)?;
     } else {
         write_founders(fs, &mut out)?;
     }
