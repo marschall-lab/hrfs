@@ -53,16 +53,18 @@ rule construct_founder_seqs:
 		sol = f"{{sample}}.flow.sol",
 		graph = f"{{sample}}.gfa",
 	output:
-		f"{{sample}}.flow.founders.txt"
+		f = f"{{sample}}.flow.founders.txt",
+		g = f"{{sample}}.flow.founders.gfa",
 	log:
 		f"{{sample}}.flow.founders.log"
 	benchmark:
 		f"{{sample}}.flow.founders.perf"
 	shell:
 		f"export RUST_LOG={RUST_LOG}; "
-		f"{RUST_BIN}/flow2seq {{input.sol}} >{{output}} 2>{{log}}; "
+		f"{RUST_BIN}/flow2seq {{input.sol}} >{{output.f}} 2>{{log}}; "
 		f"{SHDIR}/check_founder_solution.py "
-			f"{{input.graph}} {{output}} >>{{log}}"
+			f"{{input.graph}} {{output.f}} >>{{log}}; "
+		f"{SHDIR}/walk2path.sh {{output.f}} >{{output.g}}"
 
 rule get_recombination_number:
 	input:
