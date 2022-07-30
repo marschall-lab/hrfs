@@ -125,14 +125,16 @@ rule construct_minimal_founders:
 	input:
 		f"{{sample}}.min.sol"
 	output:
-		f"{{sample}}.min.founders.txt"
+		f = f"{{sample}}.min.founders.txt",
+		g = f"{{sample}}.min.founders.gfa",
 	log:
 		f"{{sample}}.min.founders.log"
 	benchmark:
 		f"{{sample}}.min.founders.perf"
 	shell:
 		f"export RUST_LOG={RUST_LOG}; "
-		f"{RUST_BIN}/min2seq {{input}} >{{output}} 2>{{log}}"
+		f"{RUST_BIN}/min2seq {{input}} >{{output.f}} 2>{{log}}; "
+		f"{SHDIR}/wide2gfa.awk {{output.f}} >{{output.g}}"
 
 rule compress_flow:
 	input:
@@ -173,10 +175,8 @@ rule compress_min_zq:
 		f"&& rm {{input.f}}"
 
 rule clean:
-	input:
-		expand(f"{{sample}}.gfa", sample = globgfa("."))
 	params:
-		lambda w, input: ".* ".join([ i[:-4] for i in input + [""] ])
+		lambda w: ".* ".join([ i.split(".gfa")[0] for i in globgfa(".") + [""]])
 	run:
 		if len(str(params)) > 0:
-			shell(f"rm {{params}}")
+			shell(f"rm -f {{params}}")
