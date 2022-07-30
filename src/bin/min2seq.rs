@@ -22,11 +22,7 @@ use founderset as ff;
     about = "Extract founder sequences from minimization solution"
 )]
 pub struct Args {
-    #[clap(
-        short = 'n',
-        long = "names",
-        help = "use haplotype names from file"
-    )]
+    #[clap(short = 'n', long = "names", help = "use haplotype names from file")]
     pub haps: Option<String>,
 
     #[clap(
@@ -210,7 +206,7 @@ fn write_founders_compact<W: io::Write>(
     log::info!("writing final haplotype-minimized founders");
 
     fs.iter().enumerate().try_for_each(|(i, f)| {
-        let name = format!("founder_seq{}", i+1);
+        let name = format!("founder_seq{}", i + 1);
         writeln!(
             out,
             "{}\t{}",
@@ -289,7 +285,7 @@ fn write_founders_long<W: io::Write>(
                             if i == 0 {
                                 format!(
                                     "{}\t{}\t",
-                                    fi+1,
+                                    fi + 1,
                                     hmap.get(cv).or(Some(&cv.to_string())).unwrap()
                                 )
                             } else {
@@ -297,7 +293,7 @@ fn write_founders_long<W: io::Write>(
                                     "{}{}\n{}\t{}\t",
                                     if *d { "<" } else { ">" },
                                     u.to_string(),
-                                    fi+1,
+                                    fi + 1,
                                     hmap.get(cv).or(Some(&cv.to_string())).unwrap(),
                                 )
                             }
@@ -325,7 +321,7 @@ fn write_founders_wide<W: io::Write>(
             writeln!(
                 out,
                 "{}{}",
-                format!("founder_seq{}\n", fi+1),
+                format!("founder_seq{}\n", fi + 1),
                 f.iter()
                     .chain(std::iter::once(f.iter().last().unwrap()))
                     .tuple_windows()
