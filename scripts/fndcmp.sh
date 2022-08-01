@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # compare lengths of the F0 founder from the simulated data (GFA)
 # to the reconstruction (walk tsv)
 if [ $# -ne 2 ]; then

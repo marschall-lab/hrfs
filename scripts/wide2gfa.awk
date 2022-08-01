@@ -1,4 +1,4 @@
-#!/bin/awk -f
+#!/usr/bin/env -S awk -f
 # usage: $0 [WIDEWALKFILE..]
 # convert wide ("horizontal", default) format founder output to full gfa1
 NF == 1{
