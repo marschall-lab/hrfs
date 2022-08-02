@@ -48,7 +48,7 @@ snakemake -k -j 1 clean
 
 ## Usage
 
-The following uses the `examples' experiment as reference.  It demonstrates the
+The following uses the `examples` experiment as reference.  It demonstrates the
 software's typical usage with the provided `snakemake` workflows.
 
 
