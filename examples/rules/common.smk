@@ -28,7 +28,8 @@ rule get_whole_graph:
 	output:
 		f"{{sample,[^/]+}}.gfa",
 	shell:
-		f"ln -s {{input}} {{output}}"
+		f"ln -s {{input}} {{output}}; "
+		f"{SHDIR}/check_input.sh {{output}} {config['xhap_regex']}"
 
 rule write_founder_flow_lp:
 	input:
