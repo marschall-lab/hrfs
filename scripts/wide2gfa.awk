@@ -6,23 +6,21 @@ NF == 1{
 	fi = 0
 }
 NF != 1{
-	subp = fn "_" fi++ "_" $1
-	split($2, a, ">")
+	subp = sprintf("%s_%03d_%s", fn, fi++, $1)
+	gsub(">", " >")
+	gsub("<", " <")
 	last = ""
-	for(i=1; i<=length(a); i++){
-		split(a[i], b, "<")
-		for(j=1; j<=length(b); j++){
-			S[b[j]] = 1
-			# first element is always +, all others are always -
-			dir = j == 1 ? "+" : "-"
-			new = b[j] "\t" dir
-			if(last != ""){
-				L[last "\t" new] = 1
-				P[subp] = P[subp] "," b[j] dir
-			}else
-				P[subp] = b[j] dir
-			last = new
-		}
+	for(i=2; i<=NF; i++){
+		s = substr($i, 2)
+		S[s] = 1
+		d = substr($i, 1, 1) == ">" ? "+" : "-"
+		l = s d
+		if(last != ""){
+			L[last "\t" l] = 1
+			P[subp] = P[subp] "," l
+		}else
+			P[subp] = l
+		last = l
 	}
 }
 END{
