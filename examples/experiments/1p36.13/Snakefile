@@ -4,14 +4,6 @@ include: "../../rules/common.smk"
 rule all:
 	input:
 		expand(f"{{sample}}.{{f}}",
-			sample = "1p36.13",
+			sample = config['name'],
 			f = [ "gfa", "min.founders.txt" ],
 		)
-
-rule get_whole_graph:
-        input:
-                f"{DATADIR}/1p36.13/{{sample}}.gfa"
-        output:
-                f"{{sample,[^/]+}}.gfa",
-        shell:
-                f"ln -s {{input}} {{output}}"

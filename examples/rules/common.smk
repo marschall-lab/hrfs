@@ -7,7 +7,8 @@ def globgfa_hap(dir):
 
 GUROBI="gurobi_cl"
 
-DATADIR = workflow.basedir + "/" + config.get('datadir')
+EXPNAME = config.get('name')
+DATADIR = workflow.basedir + "/" + config.get('datadir') + "/" + EXPNAME
 SHDIR = workflow.basedir + "/" + config.get('shelldir')
 BINDIR = workflow.basedir + "/" + config.get('bindir')
 RUST_LOG = "debug" if config['debug'] else "info"
@@ -21,6 +22,13 @@ else:
 if not "STRIP" in globals():
 	STRIP = ""
 
+rule get_whole_graph:
+	input:
+		f"{DATADIR}/{{sample}}.gfa"
+	output:
+		f"{{sample,[^/]+}}.gfa",
+	shell:
+		f"ln -s {{input}} {{output}}"
 
 rule write_founder_flow_lp:
 	input:
@@ -123,18 +131,22 @@ rule solve_minimization:
 
 rule construct_minimal_founders:
 	input:
-		f"{{sample}}.min.sol"
+		s = f"{{sample}}.min.sol",
+		g = f"{{sample}}.gfa"
 	output:
 		f = f"{{sample}}.min.founders.txt",
 		g = f"{{sample}}.min.founders.gfa",
+		z = f"{{sample}}.min.founders.full.gfa",
 	log:
 		f"{{sample}}.min.founders.log"
 	benchmark:
 		f"{{sample}}.min.founders.perf"
 	shell:
 		f"export RUST_LOG={RUST_LOG}; "
-		f"{RUST_BIN}/min2seq {{input}} >{{output.f}} 2>{{log}}; "
-		f"{SHDIR}/wide2gfa.awk {{output.f}} >{{output.g}}"
+		f"{RUST_BIN}/min2seq {{input.s}} >{{output.f}} 2>{{log}}; "
+		f"{SHDIR}/wide2gfa.awk {{output.f}} >{{output.g}}; "
+		f"cp {{input.g}} {{output.z}}; "
+		f"grep '^P' {{output.g}} >> {{output.z}}"
 
 rule compress_flow:
 	input:

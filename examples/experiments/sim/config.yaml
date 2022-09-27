@@ -2,6 +2,7 @@ debug: false
 datadir: "../../data"
 shelldir: "../../../scripts"
 bindir: "../../../target"
+name: "sim"
 
 
 nnodes: [ 25, 50, 100 ]

@@ -3,18 +3,7 @@ include: "../../rules/common.smk"
 
 rule examples:
 	input:
-		expand(f"{{sample}}.gfa",
-			sample = globgfa(f"{DATADIR}/examples")
-		),
 		expand(f"{{sample}}.{{f}}.txt",
-			sample = globgfa(f"{DATADIR}/examples"),
-			f = ["min.founders", "nrecomb" ]
+			sample = globgfa(f"{DATADIR}"),
+			f = ["min.founders"]
 		),
-
-rule get_whole_graph:
-	input:
-		f"{DATADIR}/examples/{{sample}}.gfa"
-	output:
-		f"{{sample,[^/]+}}.gfa",
-	shell:
-		f"ln -s {{input}} {{output}}"
