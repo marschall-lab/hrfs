@@ -1,8 +1,0 @@
-debug: false
-datadir: "../../data"
-shelldir: "../../../scripts"
-bindir: "../../../target"
-name: "examples"
-
-xhap_regex: "H"
-solve_time_limit: 5

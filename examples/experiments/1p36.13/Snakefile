@@ -1,9 +1,0 @@
-configfile: "config.yaml"
-include: "../../rules/common.smk"
-
-rule all:
-	input:
-		expand(f"{{sample}}.{{f}}",
-			sample = config['name'],
-			f = [ "gfa", "min.founders.txt" ],
-		)

@@ -1,7 +1,0 @@
-debug: false
-datadir: "../../data"
-shelldir: "../../../scripts"
-bindir: "../../../target"
-name: "1p36.13"
-
-xhap_regex: "."

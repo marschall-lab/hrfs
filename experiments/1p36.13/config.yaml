@@ -1,0 +1,3 @@
+outdir: "runs"
+repodir: "../.."
+gurobi_threads: 12

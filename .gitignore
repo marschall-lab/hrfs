@@ -12,9 +12,9 @@
 **/*.bbl
 **/*.blg
 **/.DS_Store
-examples/experiments/**/*
-!examples/
-!examples/experiments/**/*.yaml
-!examples/experiments/**/Snakefile
-!*/
+**/__MACOSX
+**/__pycache__
+experiments/**/runs
+**/gurobi.log
+**/.snakemake
 target

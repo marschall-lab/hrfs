@@ -1,0 +1,6 @@
+configfile: "config.yaml"
+include: "../../rules/common.smk"
+
+rule go:
+	input:
+		rules.all.input

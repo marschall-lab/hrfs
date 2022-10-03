@@ -1,9 +1,0 @@
-configfile: "config.yaml"
-include: "../../rules/common.smk"
-
-rule examples:
-	input:
-		expand(f"{{sample}}.{{f}}.txt",
-			sample = globgfa(f"{DATADIR}"),
-			f = ["min.founders"]
-		),
