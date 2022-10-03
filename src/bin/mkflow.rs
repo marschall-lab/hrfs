@@ -22,11 +22,22 @@ use founderset as ff;
     about = "Generate linear program to compute size of founder set"
 )]
 pub struct Command {
+    #[clap(
+        short = 'f',
+        long = "nfounder",
+        help = "Force fixed constant number of founder sequences"
+    )]
+    nfounder: Option<usize>,
+
     #[clap(index = 1, help = "graph in GFA1 format", required = true)]
     pub graph: String,
 }
 
-fn write_lp<W: io::Write>(graph: &HashGraph, out: &mut io::BufWriter<W>) -> Result<(), io::Error> {
+fn write_lp<W: io::Write>(
+    graph: &HashGraph,
+    nfounder: Option<usize>,
+    out: &mut io::BufWriter<W>,
+) -> Result<(), io::Error> {
     // find sources & sinks
     //
     // - sources are all nodes that in default orientation have no edges to their left
@@ -179,6 +190,23 @@ fn write_lp<W: io::Write>(graph: &HashGraph, out: &mut io::BufWriter<W>) -> Resu
     for v in sinks.iter() {
         writeln!(out, "i{} = 0", ff::v2extstr(&v))?;
     }
+    if let Some(nf) = nfounder {
+        if nf > 0 {
+            writeln!(
+                out,
+                "{}",
+                format!(
+                    "{} = {}",
+                    sinks
+                        .iter()
+                        .map(|v| "i".to_owned() + &ff::v2extstr(&v.flip()))
+                        .collect::<Vec<_>>()
+                        .join(" + "),
+                    nf
+                )
+            )?;
+        }
+    }
 
     //
     // write source constrains
@@ -250,7 +278,7 @@ fn main() -> Result<(), io::Error> {
     let graph = HashGraph::from_gfa(&gfa);
 
     log::info!("writing linear program");
-    write_lp(&graph, &mut out)?;
+    write_lp(&graph, params.nfounder, &mut out)?;
     out.flush()?;
 
     log::info!("done");
