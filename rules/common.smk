@@ -158,7 +158,9 @@ rule solve_minimization:
 	benchmark:
 		f"{OUTDIR}/{{pset}}/log/{{sample}}.min.sol.prof"
 	envmodules:
-		"gurobi",
+		"gurobi"
+	resources:
+		runtime_hrs = 12
 	threads:
 		GUROBI_THREADS
 	params:
@@ -224,6 +226,7 @@ rule construct_minimal_founders_output_full_gfa:
 	input:
 		h = f"{DATADIR}/{{sample}}.gfa",
 		m = f"{OUTDIR}/{{pset}}/{{sample}}.min.founders.gfa",
+		c = f"{OUTDIR}/{{pset}}/{{sample}}.min.founders.compact.txt",
 		f = f"{OUTDIR}/{{pset}}/{{sample}}.flow.founders.txt",
 	output:
 		f"{OUTDIR}/{{pset}}/{{sample}}.min.full.gfa",
@@ -231,4 +234,6 @@ rule construct_minimal_founders_output_full_gfa:
 		f"cp {{input.h}} {{output}}"
 		f"; {SHDIR}/walk2path.sh {{input.f}}"
 		f"	| sed -n 's/^P\t/&flow_/p' >>{{output}}"
-		f"; sed -n 's/^P\t/&min_/p' {{input.m}} >>{{output}}"
+		f"; sed -n 's/^#P\t/&min_/p' {{input.m}} >>{{output}}"
+		f"; {SHDIR}/walk2path.sh {{input.c}}"
+		f"	| sed -n 's/^P\t/&min_/p' >>{{output}}"
