@@ -35,18 +35,28 @@ rule all:
 		),
 	default_target: True
 
-# test: whether any extraction occur at all (wrt. regex or input data)
+rule check_input:
+        input:
+                f"{DATADIR}/{{sample}}.gfa"
+        output:
+                f"{OUTDIR}/.{{sample}}.ok"
+        shell:
+                f"{SHDIR}/check_input.sh"
+                f"      {{input}}"
+                f"      {XHAPEXP}"
+                f"      >{{output}}"
+
 rule extract_haplotypes:
 	input:
-		f"{DATADIR}/{{sample}}.gfa"
+		g = f"{DATADIR}/{{sample}}.gfa",
+                o = f"{OUTDIR}/.{{sample}}.ok"
 	output:
 		f"{OUTDIR}/{{sample}}.haplotypes.txt"
 	shell:
 		f"{SHDIR}/xhap.sh "
 		f"	-p {XHAPEXP}"
-		f"	{{input}}"
+		f"	{{input.g}}"
 		f"	>{{output}}"
-		f"; test 0 -ne $(du -b {{output}} | cut -f1)"
 
 rule write_founder_flow_lp:
 	input:
@@ -234,6 +244,6 @@ rule construct_minimal_founders_output_full_gfa:
 		f"cp {{input.h}} {{output}}"
 		f"; {SHDIR}/walk2path.sh {{input.f}}"
 		f"	| sed -n 's/^P\t/&flow_/p' >>{{output}}"
-		f"; sed -n 's/^#P\t/&min_/p' {{input.m}} >>{{output}}"
+		f"; sed -n 's/^P\t/#&min_/p' {{input.m}} >>{{output}}"
 		f"; {SHDIR}/walk2path.sh {{input.c}}"
 		f"	| sed -n 's/^P\t/&min_/p' >>{{output}}"
