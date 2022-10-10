@@ -318,6 +318,7 @@ fn write_founders_wide<W: io::Write>(
     fs.iter()
         .enumerate()
         .try_for_each(|(fi, f)| -> Result<(), io::Error> {
+            wspace = 0;
             writeln!(
                 out,
                 "{}{}",
