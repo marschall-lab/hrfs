@@ -17,6 +17,7 @@
 experiments/**/runs
 experiments/**/.err
 experiments/**/.out
+experiments/sim*/data
 **/gurobi.log
 **/.snakemake
 target
