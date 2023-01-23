@@ -1,0 +1,23 @@
+configfile: "config.yaml"
+include: "../../rules/common.smk"
+include: "../../rules/sim.smk"
+
+rule go:
+	input:
+		expand(f"{DATADIR}/sim.{{nnodes}}_{{rdup}}_{{rinv}}_{{nhap}}_{{i}}.gfa",
+			nnodes = config["nnodes"],
+			rdup = config["dup_ratio"],
+			rinv = config["inv_ratio"],
+			nhap = config["nhaplotypes"],
+			i = sampnames(config["nsamples"]),
+		),
+		expand(f"{OUTDIR}/{{nf}}/{{sample}}.flow.founders.txt",
+			nf = config.get("nforced", 0),
+			sample = expand(f"sim.{{nnodes}}_{{rdup}}_{{rinv}}_{{nhap}}_{{i}}",
+				nnodes = config["nnodes"],
+				rdup = config["dup_ratio"],
+				rinv = config["inv_ratio"],
+				nhap = config["nhaplotypes"],
+				i = sampnames(config["nsamples"]),
+			),
+		),

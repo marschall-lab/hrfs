@@ -1,0 +1,9 @@
+outdir: "runs"
+repodir: "../.."
+gurobi_timeout: 1800
+
+nnodes: [ 10, 100, 1000, 10000, 100000 ]
+dup_ratio: [ 0.1, 1.0, 0.1 ]
+inv_ratio: [ 0.1, 1.0, 0.1 ]
+nhaplotypes: [ 50 ]
+nsamples: 50
